@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,7 +31,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,49 +43,41 @@ fun KeyboardScreen() {
     val colorBackground = colorResource(id = R.color.colorBackground)
     val colorBackgroundPressed = colorResource(id = R.color.colorBackgroundPressed)
 
-    var isShiftLock = false
+    //var isShiftLock = false
     var isShifted by remember { mutableStateOf(false) }
     val keysMatrix = arrayOf(
         arrayOf('s', 't', 'o'),
         arrayOf('n', 'a'),
         arrayOf('r', 'e', 'i')
     )
-    val swipeKeysUnshifted by remember {
-        mutableStateOf(
+    val swipeKeysUnshifted =
             arrayOf(
+                //First [0,1]
                 arrayOf('l', 'y', 'p', 'd'),
+                arrayOf('L', 'Y', 'P', 'D'),
+                //Second [2,3]
                 arrayOf('.', '.', '.', '.'),
+                arrayOf('.', '.', '.', '.'),
+                //Third [4,5]
                 arrayOf('c', 'g', 'w', 'h'),
+                arrayOf('C', 'G', 'W', 'H'),
+                //Fourth [6,7]
                 arrayOf('b', 'u', 'z', 'm'),
+                arrayOf('B', 'U', 'Z', 'M'),
+                //Fifth [8,9]
                 arrayOf('q', 'f', 'k', 'v'),
+                arrayOf('Q', 'F', 'K', 'V'),
+                //Sixth [10,11]
                 arrayOf('1', 'x', '3', '2'),
+                arrayOf('\'', 'X', '!', '"'),
+                //Seventh [12,13]
                 arrayOf('4', 'j', '6', '5'),
-                arrayOf('7', '0', '9', '8')
-            )
-        )
-    }
-    val swipeKeysShifted by remember {
-        mutableStateOf(
-            arrayOf(
-                arrayOf('z', 'y', 'p', 'd'),
-                arrayOf('.', '.', '.', '.'),
-                arrayOf('c', 'g', 'w', 'h'),
-                arrayOf('b', 'u', 'z', 'm'),
-                arrayOf('q', 'f', 'k', 'v'),
-                arrayOf('\'', 'x', '!', '"'),
-                arrayOf('?', 'j', '(', '-'),
+                arrayOf('?', 'J', '(', '-'),
+                //Eighth [14,15]
+                arrayOf('7', '0', '9', '8'),
                 arrayOf(')', ':', ',', '.')
             )
-        )
-    }
-    val charMap = swipeKeysUnshifted.flatten().zip(swipeKeysShifted.flatten()).toMap()
-    var displayArray by remember { mutableStateOf(swipeKeysUnshifted) }
-
-    displayArray = if (isShifted) {
-        swipeKeysShifted
-    } else {
-        swipeKeysUnshifted
-    }
+    val displayArray by remember { mutableStateOf(swipeKeysUnshifted) }
 
     val interactionSource = remember { MutableInteractionSource() }
     val pressed = interactionSource.collectIsPressedAsState()
