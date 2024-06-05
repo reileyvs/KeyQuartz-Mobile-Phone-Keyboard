@@ -152,10 +152,9 @@ fun KeyboardScreen() {
                         offsetX = 0f
                         offsetY = 0f
                     } else if (offsetY > slideDist && !occurredDown) {
-                        //TODO: Implement Emoji keyboard
                         (ctx as IMEService).currentInputConnection.commitText(
-                            "emojis",
-                            6
+                            "\n",
+                            1
                         )
                         occurredRight = false
                         occurredLeft = false
