@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -190,37 +191,64 @@ fun KeyboardScreen() {
                         .offset(y = off),
                 ) {
                     row.forEach { key ->
-                        KeyboardKey(
-                            keyboardKey = key,
-                            modifier = when (key) {
-                                row.first() -> {
-                                    Modifier.padding(end = dist)
-                                }
-                                row.last() -> {
-                                    Modifier.padding(start = dist)
-                                }
-                                else -> {
-                                    Modifier
-                                }
-                            },
-                            swipekeys = when(row) {
-                                keysMatrix.first() ->
-                                    when(key) {
-                                    row[0] -> displayArray[0]
-                                    row[1] -> displayArray[1]
-                                    else -> displayArray[2]
+                        key(isShifted) {
+                            KeyboardKey(
+                                keyboardKey = key,
+                                modifier = when (key) {
+                                    row.first() -> {
+                                        Modifier.padding(end = dist)
                                     }
-                                else ->
-                                    when(key) {
-                                        row[0] -> displayArray[5]
-                                        row[1] -> displayArray[6]
-                                        else -> displayArray[7]
+
+                                    row.last() -> {
+                                        Modifier.padding(start = dist)
                                     }
-                            },
-                            isShifted = isShifted
-                        )
-                        { newShifted ->
-                            isShifted = newShifted
+
+                                    else -> {
+                                        Modifier
+                                    }
+                                },
+                                swipekeys = when (row) {
+                                    keysMatrix.first() ->
+                                        when (key) {
+                                            row[0] -> when (isShifted) {
+                                                false -> displayArray[0]
+                                                else -> displayArray[1]
+                                            }
+
+                                            row[1] -> when (isShifted) {
+                                                false -> displayArray[2]
+                                                else -> displayArray[3]
+                                            }
+
+                                            else -> when (isShifted) {
+                                                false -> displayArray[4]
+                                                else -> displayArray[5]
+                                            }
+                                        }
+
+                                    else ->
+                                        when (key) {
+                                            row[0] -> when (isShifted) {
+                                                false -> displayArray[10]
+                                                else -> displayArray[11]
+                                            }
+
+                                            row[1] -> when (isShifted) {
+                                                false -> displayArray[12]
+                                                else -> displayArray[13]
+                                            }
+
+                                            else -> when (isShifted) {
+                                                false -> displayArray[14]
+                                                else -> displayArray[15]
+                                            }
+                                        }
+                                },
+                                isShifted = isShifted
+                            )
+                            { newShifted ->
+                                isShifted = newShifted
+                            }
                         }
                     }
                 }
@@ -230,23 +258,25 @@ fun KeyboardScreen() {
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = modifier
                 ) {
-                    KeyboardKey(
-                        keyboardKey = row[0],
-                        modifier = modifier.padding(end = dist/2),
-                        swipekeys = displayArray[3],
-                        isShifted = isShifted
-                    )
-                    { newShifted ->
-                        isShifted = newShifted
-                    }
-                    KeyboardKey(
-                        keyboardKey = row[1],
-                        modifier = modifier.padding(start = dist/2),
-                        swipekeys = displayArray[4],
-                        isShifted = isShifted
-                    )
-                    { newShifted ->
-                        isShifted = newShifted
+                    key(isShifted) {
+                        KeyboardKey(
+                            keyboardKey = row[0],
+                            modifier = modifier.padding(end = dist / 2),
+                            swipekeys = if (!isShifted) displayArray[6] else displayArray[7],
+                            isShifted = isShifted
+                        )
+                        { newShifted ->
+                            isShifted = newShifted
+                        }
+                        KeyboardKey(
+                            keyboardKey = row[1],
+                            modifier = modifier.padding(start = dist / 2),
+                            swipekeys = if (!isShifted) displayArray[8] else displayArray[9],
+                            isShifted = isShifted
+                        )
+                        { newShifted ->
+                            isShifted = newShifted
+                        }
                     }
                 }
             }
@@ -295,10 +325,7 @@ fun KeyboardKey(
                 offsetY += dragAmount.y
                 if (offsetX > slideDist && !occurredRight) {
                     (ctx as IMEService).currentInputConnection.commitText(
-                        when (isShifted) {
-                            swipekeys[2].isLetter() -> swipekeys[2].uppercase()
-                            else -> swipekeys[2].toString()
-                        },
+                        swipekeys[2].toString(),
                         swipekeys[2].toString().length
                     )
                     occurredRight = true
@@ -307,12 +334,10 @@ fun KeyboardKey(
                     occurredDown = false
                     offsetX = 0f
                     offsetY = 0f
+                    changeShifted(false)
                 } else if (offsetX < slideDist * -1 && !occurredLeft) {
                     (ctx as IMEService).currentInputConnection.commitText(
-                        when (isShifted) {
-                            swipekeys[0].isLetter() -> swipekeys[0].uppercase()
-                            else -> swipekeys[0].toString()
-                        },
+                        swipekeys[0].toString(),
                         swipekeys[0].toString().length
                     )
                     occurredRight = false
@@ -325,10 +350,7 @@ fun KeyboardKey(
                 }
                 if (offsetY < slideDist * -1 && !occurredUp) {
                     (ctx as IMEService).currentInputConnection.commitText(
-                        when (isShifted) {
-                            swipekeys[1].isLetter() -> swipekeys[1].uppercase()
-                            else -> swipekeys[1].toString()
-                        },
+                        swipekeys[1].toString(),
                         swipekeys[1].toString().length
                     )
                     occurredRight = false
@@ -340,10 +362,7 @@ fun KeyboardKey(
                     changeShifted(false)
                 } else if (offsetY > slideDist && !occurredDown) {
                     (ctx as IMEService).currentInputConnection.commitText(
-                        when (isShifted) {
-                            swipekeys[3].isLetter() -> swipekeys[3].uppercase()
-                            else -> swipekeys[3].toString()
-                        },
+                        swipekeys[3].toString(),
                         swipekeys[3].toString().length
                     )
                     occurredRight = false
@@ -364,13 +383,10 @@ fun KeyboardKey(
                 .clip(shape = RoundedCornerShape(10.dp))
                 .clickable(interactionSource = interactionSource, indication = null) {
                     (ctx as IMEService).currentInputConnection.commitText(
-                        when (isShifted) {
-                            keyboardKey.isLetter() -> keyboardKey.uppercase()
-                            else -> keyboardKey.toString()
-                        },
+                        keyboardKey.toString(),
                         keyboardKey.toString().length
                     )
-                    changeShifted(false)
+                    //changeShifted(false)
                 },
             painter = painterResource(id = R.drawable.white_square),
             contentDescription = "White Square",
@@ -454,40 +470,28 @@ fun SwipeLetters(
         val negative = off * -1
         //Left
         Text(
-            when(keys[0].isLetter()) {
-                isShifted -> keys[0].uppercase()
-                else -> keys[0].toString()
-            },
+            keys[0].toString(),
             modifier = Modifier.offset(x = negative, y = lowerCaseOffset),
             color = colorSwipeText,
             //fontFamily = FontFamily.Monospace
         )
         //Right
         Text(
-            when(keys[2].isLetter()) {
-                isShifted -> keys[2].uppercase()
-                else -> keys[2].toString()
-            },
+            keys[2].toString(),
             modifier = Modifier.offset(x = off),
             color = colorSwipeText,
             //fontFamily = FontFamily.Monospace
         )
         //Up
         Text(
-            when(keys[1].isLetter()) {
-                isShifted -> keys[1].uppercase()
-                else -> keys[1].toString()
-            },
+            keys[1].toString(),
             modifier = Modifier.offset(y = negative-0.5.dp),
             color = colorSwipeText,
             //fontFamily = FontFamily.Monospace
         )
         //Down
         Text(
-            when(keys[3].isLetter()) {
-                isShifted -> keys[3].uppercase()
-                else -> keys[3].toString()
-            },
+            keys[3].toString(),
             modifier = Modifier.offset(y = off-0.5.dp),
             color = colorSwipeText,
             //fontFamily = FontFamily.Monospace
