@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Test_Keyboard_UI_Compose"
+rootProject.name = "KeyQuartz"
 include(":app")
  

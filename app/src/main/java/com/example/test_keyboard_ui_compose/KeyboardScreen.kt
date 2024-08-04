@@ -1,5 +1,8 @@
 package com.example.test_keyboard_ui_compose
 
+import android.view.KeyEvent
+import android.view.KeyEvent.KEYCODE_ENTER
+import android.view.inputmethod.ExtractedTextRequest
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.colorResource
 import androidx.compose.foundation.background
@@ -114,9 +117,11 @@ fun KeyboardScreen() {
                     absoluteLeft += dragAmount.x
                     if (offsetX > slideDist && !occurredRight) {
                     //Right and left swipes
-                        (ctx as IMEService).currentInputConnection.commitText(
-                            "end",
-                            3
+                        (ctx as IMEService).currentInputConnection.setSelection(
+                            (ctx).currentInputConnection.getExtractedText(
+                                ExtractedTextRequest(), 0).text.length,
+                            (ctx).currentInputConnection.getExtractedText(
+                                ExtractedTextRequest(), 0).text.length
                         )
                         occurredRight = true
                         occurredLeft = false
@@ -126,7 +131,7 @@ fun KeyboardScreen() {
                         offsetY = 0f
                     } else if (offsetX < slideDist * -1) {
                             (ctx as IMEService).currentInputConnection.deleteSurroundingText(
-                                if (absoluteLeft < slideDist * -3) {3}
+                                if (absoluteLeft < slideDist * -7) {4}
                                 else {1},
                                 0
                             )
@@ -152,9 +157,11 @@ fun KeyboardScreen() {
                         offsetX = 0f
                         offsetY = 0f
                     } else if (offsetY > slideDist && !occurredDown) {
-                        (ctx as IMEService).currentInputConnection.commitText(
-                            "\n",
-                            1
+                        (ctx as IMEService).currentInputConnection.sendKeyEvent(
+                            KeyEvent(
+                                KeyEvent.ACTION_DOWN,
+                                KEYCODE_ENTER,
+                            )
                         )
                         occurredRight = false
                         occurredLeft = false
