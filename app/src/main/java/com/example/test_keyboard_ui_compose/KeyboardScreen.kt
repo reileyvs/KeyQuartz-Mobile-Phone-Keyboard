@@ -60,8 +60,8 @@ fun KeyboardScreen() {
                 arrayOf('l', 'y', 'p', 'd'),
                 arrayOf('L', 'Y', 'P', 'D'),
                 //Second [2,3]
-                arrayOf('.', '.', '.', '.'),
-                arrayOf('.', '.', '.', '.'),
+                arrayOf('!', '?', ',', '.'),
+                arrayOf('!', '?', ',', '.'),
                 //Third [4,5]
                 arrayOf('c', 'g', 'w', 'h'),
                 arrayOf('C', 'G', 'W', 'H'),
@@ -73,13 +73,13 @@ fun KeyboardScreen() {
                 arrayOf('Q', 'F', 'K', 'V'),
                 //Sixth [10,11]
                 arrayOf('1', 'x', '3', '2'),
-                arrayOf('\'', 'X', '!', '"'),
+                arrayOf('\'', 'X', '+', '"'),
                 //Seventh [12,13]
                 arrayOf('4', 'j', '6', '5'),
-                arrayOf('?', 'J', '(', '-'),
+                arrayOf('-', 'J', '(', '_'),
                 //Eighth [14,15]
                 arrayOf('7', '0', '9', '8'),
-                arrayOf(')', ':', ',', '.')
+                arrayOf(')', '*', '@', ':')
             )
     val displayArray by remember { mutableStateOf(swipeKeysUnshifted) }
 
